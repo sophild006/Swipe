@@ -46,6 +46,7 @@ public class SwipeActivity  extends AppCompatActivity{
                 swipeRefresh.setRefreshing(true);
             }
         });
+        adapter= new RecyclerViewAdapter(this, data);
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -60,7 +61,6 @@ public class SwipeActivity  extends AppCompatActivity{
             }
         });
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        adapter= new RecyclerViewAdapter(this, data);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -86,12 +86,15 @@ public class SwipeActivity  extends AppCompatActivity{
                     }
                     if (!isLoading) {
                         isLoading = true;
+                        adapter.mFootholder.setVisiable();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                getData();
+
+//                                getData();
                                 Log.d("test", "load more completed");
                                 isLoading = false;
+                                adapter.mFootholder.setGone();
                             }
                         }, 1000);
                     }
@@ -137,6 +140,7 @@ public class SwipeActivity  extends AppCompatActivity{
         }
         adapter.notifyDataSetChanged();
         swipeRefresh.setRefreshing(false);
+//        adapter.mFootholder.setGone();
 //        adapter.notifyItemRemoved(adapter.getItemCount());
     }
 }

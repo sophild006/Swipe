@@ -17,6 +17,7 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
     private Context context;
     private List data;
 
+    public FootViewHolder mFootholder;
 
     public RecyclerViewAdapter(Context context, List data) {
         this.context = context;
@@ -58,7 +59,8 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
         } else if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(context).inflate(R.layout.item_foot, parent,
                     false);
-            return new FootViewHolder(view);
+            mFootholder=new FootViewHolder(view);;
+            return mFootholder;
         }
         return null;
     }
@@ -95,14 +97,27 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
 
         public ItemViewHolder(View view) {
             super(view);
+
             tv = (TextView) view.findViewById(R.id.tv_date);
         }
+
     }
 
-    static class FootViewHolder extends ViewHolder {
+    public static class FootViewHolder extends ViewHolder {
 
+        public View view;
         public FootViewHolder(View view) {
             super(view);
+            this.view=view;
+        }
+
+
+        public void setGone(){
+            view.setVisibility(View.GONE);
+        }
+
+        public void setVisiable(){
+            view.setVisibility(View.VISIBLE);
         }
     }
 }

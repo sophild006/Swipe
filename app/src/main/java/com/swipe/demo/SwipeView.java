@@ -99,7 +99,7 @@ public class SwipeView extends RelativeLayout {
     private void init() {
 
         mOrignHight = rlHeader.getLayoutParams().height;
-        mMinHight = UIUtils.dip2px(getContext(), 45);  //设置最小的高度为这么多
+        mMinHight = UIUtils.dip2px(getContext(), 50);  //设置最小的高度为这么多
         mNeedDistance = mOrignHight - mMinHight;
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivHeader.getLayoutParams();
         mPhotoOriginHeight = params.height;
@@ -107,13 +107,13 @@ public class SwipeView extends RelativeLayout {
         mPhotoLeft = params.leftMargin;
         mPhotoTop = params.topMargin;
         mPhotoNeedMoveDistanceX = UIUtils.getWindowWidth(getContext()) / 2 - mPhotoLeft - mMinHight;
-        mPhotoNeedMoveDistanceY = mPhotoTop - UIUtils.dip2px(getContext(), 10);
+        mPhotoNeedMoveDistanceY = mPhotoTop - UIUtils.dip2px(getContext(),0);
         /*******************移动的文字初始化***************************/
         RelativeLayout.LayoutParams textParams = (RelativeLayout.LayoutParams) tvName.getLayoutParams();
         mTextLeft = textParams.leftMargin;
         mTextTop = textParams.topMargin;
         mTextNeedMoveDistanceX = UIUtils.getWindowWidth(getContext()) / 2 - mTextLeft + 10;
-        mTextNeedMoveDistanceY = mTextTop - mMinHight / 2 / 2;  //这里计算有点误差，正确的应该是剪去获取textview高度的一半
+        mTextNeedMoveDistanceY = mTextTop - textParams.height-mMinHight/4;  //这里计算有点误差，正确的应该是剪去获取textview高度的一半
 
         Log.d("wwq","mNeedDistance= "+mNeedDistance);
     }
@@ -192,7 +192,7 @@ public class SwipeView extends RelativeLayout {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastY = (int) ev.getY();
-                Log.d(TAG, "ACTION_DOWN==mCurrentDistance" + mCurrentDistance);
+//                Log.d(TAG, "ACTION_DOWN==mCurrentDistance" + mCurrentDistance);
                 break; //传递事件 例如可以用来子view的点击事件等
             case MotionEvent.ACTION_MOVE:
                 int distance=((int)getY()-tempY);
@@ -206,11 +206,11 @@ public class SwipeView extends RelativeLayout {
                     return false;  //传递事件
                 }
                 if (mCurrentDistance <= 0 && dy < 0) {
-                    Log.d("wwq", "event false 2");
+//                    Log.d("wwq", "event false 2");
 //                    requestDisallowInterceptTouchEvent(true);
                     return false; //把事件传递进去
                 }
-                Log.d(TAG, "dy = "+dy+"             ACTION_MOVE==mCurrentDistance" + mCurrentDistance);
+//                Log.d(TAG, "dy = "+dy+"             ACTION_MOVE==mCurrentDistance" + mCurrentDistance);
                 //改变布局
                 changeTheLayout(dy);
                 mLastY = y;
@@ -226,18 +226,19 @@ public class SwipeView extends RelativeLayout {
                     } else if (velocityY < -400){//上划
                         startToTop(1,mMinHight);
                     } else {
-                        checkTheHeight();
+//                        checkTheHeight();
                         tempY=0;
                         if(mCurrentDistance>mNeedDistance/2){
                             Log.d("wwq","> 1/2");
                             startToTop(1,mMinHight);
-                        }else{
+                        }else {
                             Log.d("wwq","< 1/2");
                             startToTop(0,mOrignHight);
                         }
                     }
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
+
                 }
 
                 Log.d(TAG, "ACTION_UP==mCurrentDistance" + mCurrentDistance);
@@ -268,23 +269,24 @@ public class SwipeView extends RelativeLayout {
     //获取了偏移率（0.0-1.0），然后就可以根据这个改变透明度了和大小了。
 
     /**
-     * 根据变化率来改变这些这些控件的变化率位置
+     *   根据变化率来改变这些这些控件的变化率位置
      *
-     * @param rate
+     *   @param rate
      */
     private void changeTheAlphaAndPostion(float rate) {
         //先改变一些控件的透明度
         if (rate >= 1) {
+//                tvSchool.setAlpha(rate);
 //            tv_user_hosipital.setVisibility(View.GONE);
 //            tv_user_hosipital_level.setVisibility(View.GONE);
 //            tv_user_project.setVisibility(View.GONE);
-        } else {
+        } else if(0.0!=rate) {
 //            tv_user_hosipital.setVisibility(View.VISIBLE);
 //            tv_user_hosipital_level.setVisibility(View.VISIBLE);
 //            tv_user_project.setVisibility(View.VISIBLE);
 //            tv_user_hosipital.setAlpha(1 - rate);
 //            tv_user_hosipital_level.setAlpha(1 - rate);
-//            tv_user_project.setAlpha(1 - rate);
+            tvSchool.setAlpha(1 - rate*2);
 //            tv_user_hosipital.setScaleY(1 - rate);
 //            tv_user_hosipital.setScaleX(1 - rate);
 //            tv_user_hosipital_level.setScaleY(1 - rate);
@@ -295,8 +297,8 @@ public class SwipeView extends RelativeLayout {
 
         //接下来是改变控件的大小和位置了  （这就是关键了）
         final RelativeLayout.LayoutParams photoParams = (RelativeLayout.LayoutParams) ivHeader.getLayoutParams();
-        photoParams.width = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 10))));
-        photoParams.height = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 10))));
+        photoParams.width = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0))));
+        photoParams.height = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0))));
         photoParams.leftMargin = (int) (mPhotoLeft + mPhotoNeedMoveDistanceX * rate);
         photoParams.topMargin = (int) (mPhotoTop - mPhotoNeedMoveDistanceY * rate);
         Log.d(TAG, "photoParams.leftMargin" + photoParams.leftMargin);
@@ -332,12 +334,23 @@ public class SwipeView extends RelativeLayout {
 
 
     private void startToTop(float rate,int height){
+
+        Log.d("wwq","startTo--   "+rate);
         if(rate==1){
+            mCurrentDistance=mNeedDistance;
+//            if(currentState==TOP){
+//                return;
+//            }
             currentState=TOP;
 
         }else{
+//            if(currentState==BOTTOM){
+//                return;
+//            }
+            mCurrentDistance=0;
             currentState=BOTTOM;
         }
+
         final RelativeLayout.LayoutParams rlParams= (RelativeLayout.LayoutParams) rlHeader.getLayoutParams();
         final RelativeLayout.LayoutParams ivParams = (RelativeLayout.LayoutParams) ivHeader.getLayoutParams();
         final RelativeLayout.LayoutParams tvNameParams = (RelativeLayout.LayoutParams) tvName.getLayoutParams();
@@ -372,7 +385,7 @@ public class SwipeView extends RelativeLayout {
             }
         });
 
-        ValueAnimator ivScaleAnim=ValueAnimator.ofFloat(ivParams.height,mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 10)))).setDuration(200);
+        ValueAnimator ivScaleAnim=ValueAnimator.ofFloat(ivParams.height,mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0)))).setDuration(200);
         ivScaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -404,6 +417,15 @@ public class SwipeView extends RelativeLayout {
             }
         });
 
+        ValueAnimator tvSchoolAlphaAnim =ValueAnimator.ofFloat(rate==1?1:0,rate==1?0:1).setDuration(200);
+        tvSchoolAlphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value= (float) animation.getAnimatedValue();
+                tvSchool.setAlpha(value);
+            }
+        });
+        tvSchoolAlphaAnim.start();
 
         ivTopAnim.start();
         rlHAnim.start();
