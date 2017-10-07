@@ -107,7 +107,7 @@ public class SwipeView extends RelativeLayout {
         mPhotoLeft = params.leftMargin;
         mPhotoTop = params.topMargin;
         mPhotoNeedMoveDistanceX = UIUtils.getWindowWidth(getContext()) / 2 - mPhotoLeft - mMinHight;
-        mPhotoNeedMoveDistanceY = mPhotoTop - UIUtils.dip2px(getContext(),0);
+        mPhotoNeedMoveDistanceY = mPhotoTop - UIUtils.dip2px(getContext(),5);
         /*******************移动的文字初始化***************************/
         RelativeLayout.LayoutParams textParams = (RelativeLayout.LayoutParams) tvName.getLayoutParams();
         mTextLeft = textParams.leftMargin;
@@ -297,8 +297,8 @@ public class SwipeView extends RelativeLayout {
 
         //接下来是改变控件的大小和位置了  （这就是关键了）
         final RelativeLayout.LayoutParams photoParams = (RelativeLayout.LayoutParams) ivHeader.getLayoutParams();
-        photoParams.width = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0))));
-        photoParams.height = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0))));
+        photoParams.width = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth   - UIUtils.dip2px(getContext(), 40))));
+        photoParams.height = (int) (mPhotoOriginWidth - (rate * (mPhotoOriginWidth  - UIUtils.dip2px(getContext(), 40))));
         photoParams.leftMargin = (int) (mPhotoLeft + mPhotoNeedMoveDistanceX * rate);
         photoParams.topMargin = (int) (mPhotoTop - mPhotoNeedMoveDistanceY * rate);
         Log.d(TAG, "photoParams.leftMargin" + photoParams.leftMargin);
@@ -385,7 +385,7 @@ public class SwipeView extends RelativeLayout {
             }
         });
 
-        ValueAnimator ivScaleAnim=ValueAnimator.ofFloat(ivParams.height,mPhotoOriginWidth - (rate * (mPhotoOriginWidth - mMinHight - UIUtils.dip2px(getContext(), 0)))).setDuration(200);
+        ValueAnimator ivScaleAnim=ValueAnimator.ofFloat(ivParams.height,mPhotoOriginWidth - (rate * (mPhotoOriginWidth - UIUtils.dip2px(getContext(), 40)))).setDuration(200);
         ivScaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -417,7 +417,7 @@ public class SwipeView extends RelativeLayout {
             }
         });
 
-        ValueAnimator tvSchoolAlphaAnim =ValueAnimator.ofFloat(rate==1?1:0,rate==1?0:1).setDuration(200);
+        ValueAnimator tvSchoolAlphaAnim =ValueAnimator.ofFloat(tvSchool.getAlpha()*2,rate==1?0:1).setDuration(200);
         tvSchoolAlphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
